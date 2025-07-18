@@ -1,2 +1,2 @@
-# React Native, Right Now - A boilerplate
+# React Native, Right Now — A boilerplate
 
