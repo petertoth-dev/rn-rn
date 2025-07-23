@@ -16,6 +16,7 @@
     "pod:install": "cd ios && pod install && cd .."
   },
   "dependencies": {
+    "@react-native-community/netinfo": "^11.4.1",
     "@react-native/new-app-screen": "0.80.1",
     "react": "19.1.0",
     "react-native": "0.80.1"
