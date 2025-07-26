@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from 'react-native';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import {useForm} from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 import { logUI } from '@src/utils/logger.ts';
 import { authorizationContext } from '@src/api/auth/AuthorizationStrategy.ts';
@@ -15,9 +15,9 @@ const LoginScreen = () => {
   logUI.debug('LoginScreen Render');
   const route = useRoute<RouteProp<any>>();
   const { Theme: theme } = useTheme();
+  const navigation = useNavigation();
 
-
-  const { control, handleSubmit, setValue} = useForm<FormData>({
+  const { control, handleSubmit, setValue } = useForm<FormData>({
     mode: 'onChange',
   });
 
@@ -31,12 +31,20 @@ const LoginScreen = () => {
   };
 
   return (
-    <View style={[theme.styles.Bg, { flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
-      <Pressable
-        onPress={handleLogin}
-      >
+    <View
+      style={[theme.styles.Bg, { flex: 1, justifyContent: 'center', alignItems: 'center' },]}
+    >
+      <Pressable onPress={handleLogin}>
         <Text style={[theme.styles.Text]}>Login</Text>
-        <Text style={[theme.styles.Text]}>Login SH</Text>
+        <Pressable
+          onPress={() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            }
+          }}
+        >
+          <Text style={[theme.styles.Text]}>Back</Text>
+        </Pressable>
       </Pressable>
     </View>
   );

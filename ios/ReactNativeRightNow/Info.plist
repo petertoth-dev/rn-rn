@@ -31,6 +31,12 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>$(PRODUCT_NAME) wants to know your location</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>$(PRODUCT_NAME) wants to know your location</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>$(PRODUCT_NAME) wants to know your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
 	<key>RCTNewArchEnabled</key>
