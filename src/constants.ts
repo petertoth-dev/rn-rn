@@ -19,14 +19,14 @@ export const RN_GEOLOCATION_WATCHERS: any[] = [];
 
 export const PERMISSIONS: {[key in AppPermissions]: {image: any; title: string, description: string, buttonText: string, permission: Permission}} = {
   LOCATION_WHEN_IN_USE: {
-    image: require('@src/assets/globe.png'),
+    image: require('@src/assets/logo-purple-lg-transp.png'),
     title: 'Enhance your travel experience',
     description: 'Automatically mark new countries and attraction nearby on your personal map as you travel by turning location settings on',
     buttonText: 'Allow Location',
     permission: Platform.OS === 'android' ? PERMS.ANDROID.ACCESS_FINE_LOCATION : PERMS.IOS.LOCATION_WHEN_IN_USE,
   },
   LOCATION_ALWAYS: {
-    image: require('@src/assets/globe.png'),
+    image: require('@src/assets/logo-purple-lg-transp.png'),
     title: 'Enhance your travel experience',
     description: 'Automatically mark new countries and attraction nearby on your personal map as you travel by turning location settings on',
     buttonText: 'Allow Location',
