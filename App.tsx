@@ -1,79 +1,97 @@
-import {Appearance, SafeAreaView, StatusBar, StyleSheet, Text, useColorScheme, View} from 'react-native';
-import {useEffect, useState} from 'react';
-import {APP_ENV} from "@env"
-import dayjs from 'dayjs';
-import {StoreState, useStore} from '@state/store.ts';
-import {storage} from '@src/storage/Storage.ts';
-import {useGetApiStatus} from '@src/api/app.api.ts';
-import {logApp} from '@src/utils/logger.ts';
-import {authorizationContext} from '@src/api/auth/AuthorizationStrategy.ts';
-import Connectivity from '@components/app/Connectivity.component.tsx';
-import {DEFAULT_COLOR_SCHEME} from '@src/constants.ts';
+import { StatusBar, StyleSheet } from 'react-native';
+import { useRef } from 'react';
+import { BASE_URL } from '@env';
+import { useStore } from '@state/store.ts';
+import { RootNavigationStackParamList } from '@app-types/navigation.types.ts';
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from '@react-navigation/native';
+import { logNavigation } from '@src/utils/logger.ts';
+import LoginScreen from '@src/screens/auth/Login.screen.tsx';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from '@src/screens/Home.screen.tsx';
+import { ThemeProvider } from '@src/themes/theme.context.tsx';
+import SplashScreen from '@components/app/SplashScreen.component.tsx';
+import { AppProvider } from './AppProvider.tsx';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function App() {
-  const systemColorScheme = useColorScheme() || DEFAULT_COLOR_SCHEME;
-  const isReady = useStore((state: StoreState) => state.app.isReady);
-  const setAppReadyStatus = useStore((state: StoreState) => state.app.setAppReadyStatus);
-  const connectivity = useStore((state) => state.app.connectivity);
-  const colorScheme = useStore((state) => state.app.system.colorScheme);
-  const setAppState = useStore((state) => state.app.set);
-  const getApiStatus = useGetApiStatus();
-  const [apiStatus, setApiStatus] = useState<'connected' | null>(null);
+  const Stack = createNativeStackNavigator<RootNavigationStackParamList>();
+  const navigationRef = useNavigationContainerRef();
+  const routeNameRef = useRef<string | undefined>(undefined);
 
-  storage.setItem('RENDER_TIMESTAMP', dayjs().format('YYYY-MM-DD HH:mm:ss'));
+  const isReady = useStore(state => state.app.isReady);
+  const colorScheme = useStore(state => state.app.system.colorScheme);
 
-  // TODO: Add Splash-Screen logic
-  useEffect(() => {
-    setTimeout(()=>{
-      setAppReadyStatus(true);
-    },3000)
-  },[]);
+  const linking = {
+    prefixes: ['rn-rn://', BASE_URL],
+    config: {
+      screens: {
+        // 'App.VerifyEmailScreen': '/email/verification/:token', // example how to add universal-links to the project
+      },
+    },
+  };
 
-  // Test HTTP client
-  useEffect(() => {
-    getApiStatus.request().then((response)=>{
-      setApiStatus(response?.data?.status || null);
-    })
-  },[])
-
-  // Test Auth- TODO: Move this to an example Login component
-  useEffect(() => {
-    authorizationContext.getStrategy()?.setToken('TESTING.auth.token');
-  },[])
-
-  // Watch the device's Color Scheme changes
-  useEffect(() => {
-    setAppState(state => {state.app.system.colorScheme = systemColorScheme});
-    const appearanceListener = Appearance.addChangeListener((event: Appearance.AppearancePreferences) => {
-      setAppState(state => {state.app.system.colorScheme = event.colorScheme || DEFAULT_COLOR_SCHEME});
-    });
-
-    // Clean up the listener when the component unmounts
-    return () => {
-      appearanceListener.remove();
-    };
-  }, []);
+  /**
+   * You can add specific logic here. E.g., show different routes when the user has logged in
+   */
+  let initialRoute = (): keyof RootNavigationStackParamList => {
+    return 'App.HomeScreen';
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar translucent={true} barStyle={systemColorScheme === 'light' ? 'light-content' : 'dark-content'} />
-      <Connectivity />
-      <Text style={{color: '#fff', fontSize: 40}}>ENV: {APP_ENV}</Text>
-      <Text style={{color: '#fff', fontSize: 40}}>isReady: {isReady ? 'true' : 'false'}</Text>
-      <Text style={{color: '#fff', fontSize: 20}}>Color Scheme: {colorScheme}</Text>
-      <Text style={{color: '#fff', fontSize: 15}}>Connectivity: isConnected: {connectivity.isConnected ? 'yes' : 'no'}, isOnline: {connectivity.isOnline ? 'yes' : 'no'}</Text>
-      <Text style={{color: '#fff', fontSize: 20}}>Storage Test: {storage.getItem('RENDER_TIMESTAMP')}</Text>
-      <Text style={{color: '#fff', fontSize: 20}}>API Test: {apiStatus ?? 'disconnected'}</Text>
-    </SafeAreaView>
+    <AppProvider>
+      <ThemeProvider>
+        {!isReady ? (
+          <SplashScreen />
+        ) : (
+          <>
+            <SafeAreaView style={styles.safeAreaView}>
+              <StatusBar
+                translucent={true}
+                barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'}
+              />
+              <NavigationContainer
+                ref={navigationRef}
+                linking={linking}
+                // Log Navigation changes
+                onReady={() => {
+                  routeNameRef.current = navigationRef.getCurrentRoute()?.name;
+                }}
+                onStateChange={async () => {
+                  const previousRouteName = routeNameRef.current;
+                  const currentRouteName =
+                    navigationRef.getCurrentRoute()?.name;
+
+                  if (previousRouteName !== currentRouteName) {
+                    routeNameRef.current = currentRouteName;
+                    logNavigation.debug(currentRouteName);
+                  }
+                }}
+              >
+                <Stack.Navigator
+                  initialRouteName={initialRoute()}
+                  screenOptions={{ headerShown: false }}
+                >
+                  <Stack.Screen
+                    name="App.LoginScreen"
+                    component={LoginScreen}
+                  />
+                  <Stack.Screen name="App.HomeScreen" component={HomeScreen} />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </SafeAreaView>
+          </>
+        )}
+      </ThemeProvider>
+    </AppProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeAreaView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'blue',
   },
 });
 

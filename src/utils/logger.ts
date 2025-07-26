@@ -1,5 +1,4 @@
 import {logger, consoleTransport, configLoggerType, transportFunctionType} from 'react-native-logs';
-import {APP_ENV} from '@env';
 
 // TODO: Implement FireBase
 // import crashlytics from '@react-native-firebase/crashlytics';

@@ -1,6 +1,5 @@
 import { InternalAxiosRequestConfig } from 'axios';
 import {JwtAuthStrategy} from '@src/api/auth/strategies/JwtAuthStrategy.ts';
-import {OAuth2Strategy} from '@src/api/auth/strategies/OAuth2Strategy.ts';
 
 /**
  * Interface for authorization strategies
