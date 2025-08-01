@@ -1,12 +1,12 @@
 import { StyleSheet } from 'react-native';
 import {
-  Colors,
+  Colors, ColStyles, ColumnSize,
   ContextualColors,
   CoreComponentStyles,
   GeneralColors,
   HelperStyles,
   SpacerStyles,
-  SpacerTypes,
+  SpacerTypes, StyleTypes,
   ThemeColors,
   ThemeType,
 } from '../../types/theme.types.ts';
@@ -42,8 +42,10 @@ const generalColors = {
   blue: 'blue',
   green: 'green',
   orange: 'orange',
+  purple: '#7b2994',
 
   // Neutral
+  neutral50: '#f8f8f8',
   neutral100: '#F1F1F1',
   neutral200: '#E0E0E0',
   neutral300: '#999999',
@@ -54,6 +56,8 @@ const generalColors = {
   neutral800: '#292929',
   neutral900: '#232323',
   neutral1000: '#1D1D1D',
+  neutral1100: '#131313',
+  neutral1200: '#030203',
 } satisfies GeneralColors;
 
 const themeColors: ThemeColors = {
@@ -62,8 +66,9 @@ const themeColors: ThemeColors = {
 };
 
 const contextualColors: ContextualColors = {
-  primary: generalColors.blue,
-  secondary: generalColors.neutral400,
+  primary: generalColors.purple,
+  secondary: '#602e71',
+  accent: '#87499c',
   success: generalColors.green,
   danger: generalColors.red,
   warning: generalColors.orange,
@@ -122,16 +127,22 @@ const coreComponentStyles: CoreComponentStyles =
       fontSize: typography.normal,
       fontWeight: '600',
     },
+    Lead: {
+      fontFamily: DEFAULT_FONT,
+      color: colors.text,
+      fontSize: typography[1],
+      fontWeight: '300',
+    },
     Link: {
       color: colors.primary,
-      fontSize: 16,
+      fontSize: typography.normal,
       fontWeight: '400',
       textDecorationLine: 'underline',
     },
     TextInput: {
       fontFamily: DEFAULT_FONT,
       color: colors.text,
-      fontSize: 16,
+      fontSize: typography.normal,
       lineHeight: 20,
       backgroundColor: colors.background,
       borderWidth: 1,
@@ -158,7 +169,7 @@ const coreComponentStyles: CoreComponentStyles =
     ButtonDefaultText: {
       color: colors.neutral400,
       fontWeight: '400',
-      fontSize: 16,
+      fontSize: typography.normal,
     },
     ButtonPrimary: {
       borderWidth: 1,
@@ -168,13 +179,18 @@ const coreComponentStyles: CoreComponentStyles =
     ButtonPrimaryText: {
       color: colors.white,
       fontWeight: '600',
-      fontSize: 16,
+      fontSize: typography.normal,
     },
     Card: {
-      backgroundColor: colors.white,
+      backgroundColor: colors.neutral50,
       borderRadius: 12,
       borderWidth: 1,
       borderColor: colors.neutral200,
+    },
+    CardText: {
+      fontFamily: DEFAULT_FONT,
+      color: colors.neutral400,
+      fontSize: typography.normal,
     },
     CardDefault: {
       backgroundColor: colors.white,
@@ -211,6 +227,14 @@ const coreComponentStyles: CoreComponentStyles =
       fontSize: 14,
       color: colors.neutral900,
       fontWeight: '700',
+    },
+    Code: {
+      fontSize: typography.small,
+      paddingVertical: spacing[1],
+      paddingHorizontal: spacing[2],
+      borderRadius: 6,
+      backgroundColor: colors.neutral100,
+      color: '#93928d',
     },
   });
 
@@ -254,6 +278,18 @@ const generateSpacerStyles = (): SpacerStyles => {
   return spacerStyles;
 };
 
+const generateColStyles = (): {[key in `col${ColumnSize}`]: StyleTypes} => {
+  const colStyles = {} as ColStyles;
+
+  for (let i = 1; i <= 12; i++) {
+    colStyles[`col${i}` as keyof ColStyles] = {
+      flex: 0,
+      width: `${(i / 12) * 100}%`,
+    };
+  }
+  return colStyles;
+};
+
 const helperStyles: HelperStyles = {
   background: {
     primary: {
@@ -294,6 +330,12 @@ const helperStyles: HelperStyles = {
     underline: {
       textDecorationLine: 'underline',
     },
+    strike: {
+      textDecorationLine: 'line-through',
+    },
+    small: {
+      fontSize: typography.small,
+    },
     center: {
       textAlign: 'center',
     },
@@ -305,12 +347,8 @@ const helperStyles: HelperStyles = {
     },
   },
   row: {
-    flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-  },
-  spaceBetween: {
-    justifyContent: 'space-between',
   },
   col: {
     auto: {
@@ -323,6 +361,21 @@ const helperStyles: HelperStyles = {
       flexShrink: 0,
       flexBasis: 0,
     },
+    ...generateColStyles(),
+  },
+  justifyContent: {
+    start: { justifyContent: 'flex-start' },
+    center: { justifyContent: 'center' },
+    spaceBetween: { justifyContent: 'space-between' },
+    spaceAround: { justifyContent: 'space-around' },
+    spaceEvenly: { justifyContent: 'space-evenly' },
+  },
+  alignItems: {
+    start: { alignItems: 'flex-start' },
+    end: { alignItems: 'flex-end' },
+    center: { alignItems: 'center' },
+    stretch: { alignItems: 'stretch' },
+    baseline: { alignItems: 'baseline' },
   },
   ...generateSpacerStyles(),
 };
@@ -335,4 +388,5 @@ export const styles = {
 export const Theme: ThemeType = {
   colors: colors,
   styles: styles,
+  spacing: spacing,
 };

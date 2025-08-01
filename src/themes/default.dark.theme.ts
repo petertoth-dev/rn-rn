@@ -1,9 +1,10 @@
 import { Theme as LightTheme } from '@src/themes/default.light.theme.ts';
+import { DEFAULT_FONT } from '@src/constants.ts';
 
 const colors = {
   ...LightTheme.colors,
   text: LightTheme.colors.white,
-  background: LightTheme.colors.neutral900,
+  background: LightTheme.colors.neutral1200,
 };
 
 export const Theme = {
@@ -42,6 +43,21 @@ export const Theme = {
     H6: {
       ...LightTheme.styles.H6,
       color:colors.text,
+    },
+    Lead: {
+      ...LightTheme.styles.Lead,
+      color:colors.text,
+    },
+    Code: {
+      ...LightTheme.styles.Code,
+      backgroundColor: colors.neutral1100,
+      color: '#a5a49f',
+    },
+    Card: {
+      ...LightTheme.styles.Card,
+      borderColor: colors.neutral900,
+      backgroundColor: colors.neutral1100,
+      color: '#a5a49f',
     },
   },
 };

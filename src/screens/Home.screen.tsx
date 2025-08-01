@@ -1,16 +1,18 @@
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { log, logUI } from '@src/utils/logger.ts';
 import { APP_ENV } from '@env';
 import { storage } from '@src/storage/Storage.ts';
-import {StoreState, useStore} from '@state/store.ts';
-import { useGetApiStatus } from '@src/api/app.api.ts';
+import { StoreState, useStore } from '@state/store.ts';
+import { useGetQuote } from '@src/api/app.api.ts';
 import dayjs from 'dayjs';
 import { useTheme } from '@src/themes/theme.context.tsx';
 import { check, request, RESULTS } from 'react-native-permissions';
 import { PERMISSIONS } from '@src/constants.ts';
 import useWatchLocation from '@src/utils/geolocation.ts';
+import { QuoteApiResponse } from '@app-types/api.types.ts';
+import { ScreenHeader } from '@components/ui/ScreenHeader.tsx';
 
 const HomeScreen = () => {
   logUI.debug('HomeScreen Render');
@@ -19,53 +21,108 @@ const HomeScreen = () => {
   const connectivity = useStore((state) => state.app.connectivity);
   const colorScheme = useStore((state) => state.app.system.colorScheme);
   const deviceLocation = useStore((state) => state.app.device.location);
-  const [apiStatus, setApiStatus] = useState<'connected' | null>(null);
-  const getApiStatus = useGetApiStatus();
+  const [quote, setQuote] = useState<string>('');
+  const getQuote = useGetQuote();
   const { Theme: theme } = useTheme();
-  const {watchLocation} = useWatchLocation();
+  const { watchLocation } = useWatchLocation();
 
+  // Save render timestamp
   storage.setItem('RENDER_TIMESTAMP', dayjs().format('YYYY-MM-DD HH:mm:ss'));
-  
-  // Test HTTP client
-  useEffect(() => {
-    getApiStatus.request().then((response)=>{
-      setApiStatus(response?.data?.status || null);
-    })
-  },[]);
 
-  // Location Tracking Permission
+  // Fetch Quote
   useEffect(() => {
-    check(PERMISSIONS.LOCATION_WHEN_IN_USE.permission).then((status)=>{
-      if(status !== RESULTS.GRANTED){
-        request(PERMISSIONS.LOCATION_WHEN_IN_USE.permission)
-        //permissionRequestBottomSheetRef?.current?.present();
-        log.debug('LOCATION_WHEN_IN_USE status:', status);
-      }else{
+    getQuote.request().then((response) => {
+      const data = response as unknown as QuoteApiResponse;
+      setQuote(data[0]?.q || '');
+    });
+  }, []);
+
+  // Handle Location Permissions
+  useEffect(() => {
+    check(PERMISSIONS.LOCATION_WHEN_IN_USE.permission).then((status) => {
+      if (status !== RESULTS.GRANTED) {
+        request(PERMISSIONS.LOCATION_WHEN_IN_USE.permission);
+      } else {
         watchLocation.start();
-        request(PERMISSIONS.LOCATION_ALWAYS.permission).then((status)=>{
-          console.log('LOCATION_ALWAYS', status);
-        });
+        request(PERMISSIONS.LOCATION_ALWAYS.permission);
       }
     });
   }, []);
 
-  
   return (
-    <View style={[theme.styles.Bg,{flex: 1, justifyContent: 'center', alignItems: 'center'}]}>
-      <Text style={[theme.styles.H1]}>ENV: {APP_ENV}</Text>
-      <Text style={[theme.styles.H2]}>isReady: {isReady ? 'true' : 'false'}</Text>
-      <Text style={[theme.styles.H3]}>Color Scheme: {colorScheme}</Text>
-      <Text style={[theme.styles.H4]}>Connectivity: isConnected: {connectivity.isConnected ? 'yes' : 'no'}, isOnline: {connectivity.isOnline ? 'yes' : 'no'}</Text>
-      <Text style={[theme.styles.H5]}>Storage Test: {storage.getItem('RENDER_TIMESTAMP')}</Text>
-      <Text style={[theme.styles.Text]}>API Test: {apiStatus ?? 'disconnected'}</Text>
-      <Text style={[theme.styles.Text]}>Location: {deviceLocation?.coords.latitude}, {deviceLocation?.coords.longitude}, {deviceLocation?.coords.altitude}</Text>
-      <Pressable
-        onPress={() => {
-          navigation.navigate('App.LoginScreen');
-        }}>
-        <Text>LOGIN</Text>
-      </Pressable>
-    </View>
+    <ScrollView
+      style={[theme.styles.Bg, { flex: 1 }]}
+      contentContainerStyle={[theme.styles.p4, theme.styles.g4]}
+      stickyHeaderIndices={[0]}
+    >
+      <ScreenHeader title="React Native, Right Now!" textColor={theme.colors.accent} LeftIcon={null} />
+      {/* Header */}
+      <Text style={[theme.styles.H1, theme.styles.mb3, theme.styles.text.center]}>
+        Welcome to the App
+      </Text>
+
+      {/* ENV Card */}
+      <View style={[theme.styles.Card, theme.styles.p3, theme.styles.g2]}>
+        <Text style={theme.styles.H4}>App</Text>
+        <Text style={theme.styles.Text}>ENV: {APP_ENV}</Text>
+        <Text style={theme.styles.Text}>Ready: {isReady ? '✅ Yes' : '❌ No'}</Text>
+        <Text style={theme.styles.Text}>Color Scheme: {colorScheme}</Text>
+      </View>
+
+      {/* Connectivity Card */}
+      <View style={[theme.styles.Card, theme.styles.p3, theme.styles.g2]}>
+        <Text style={theme.styles.H4}>Connectivity</Text>
+        <Text style={theme.styles.Text}>
+          Connected: {connectivity.isConnected ? '✅ Yes' : '❌ No'}
+        </Text>
+        <Text style={theme.styles.Text}>
+          Online: {connectivity.isOnline ? '✅ Yes' : '❌ No'}
+        </Text>
+      </View>
+
+      {/* Quote Block */}
+      <View style={[theme.styles.Card, theme.styles.p3, theme.styles.g2,]}>
+        <Text style={theme.styles.H4}>Daily Quote</Text>
+        <Text style={[theme.styles.CardText]}>{quote || 'Fetching a quote...'}</Text>
+      </View>
+
+      {/* Location */}
+      <View style={[theme.styles.Card, theme.styles.p3, theme.styles.g2]}>
+        <Text style={theme.styles.H4}>Location</Text>
+        {deviceLocation ? (
+          <Text style={theme.styles.Text}>
+            {deviceLocation.coords.latitude}, {deviceLocation.coords.longitude} (alt:
+            {deviceLocation.coords.altitude})
+          </Text>
+        ) : (
+          <Text style={theme.styles.Text}>Location not available</Text>
+        )}
+      </View>
+
+      {/* Storage */}
+      <View style={[theme.styles.Card, theme.styles.p3]}>
+        <Text style={theme.styles.H4}>Last Render</Text>
+        <Text style={theme.styles.Text}>{storage.getItem('RENDER_TIMESTAMP')}</Text>
+      </View>
+
+      {/* Navigation Buttons */}
+      <View style={[theme.styles.g2]}>
+        {[
+          { title: 'Login', screen: 'App.LoginScreen' },
+          { title: 'Typography', screen: 'App.TypographyScreen' },
+          { title: 'Grid System', screen: 'App.GridSystemScreen' },
+          { title: 'Components', screen: 'App.ComponentsScreen' },
+        ].map((btn) => (
+          <Pressable
+            key={btn.title}
+            style={[theme.styles.Button, theme.styles.ButtonPrimary]}
+            onPress={() => navigation.navigate(btn.screen as never)}
+          >
+            <Text style={[theme.styles.ButtonPrimaryText]}>{btn.title}</Text>
+          </Pressable>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
