@@ -43,6 +43,8 @@ A modern, feature-rich React Native boilerplate designed for rapid development a
 - 📶 **Connectivity** monitoring
 - 📝 **Logging** system
 - 🧪 **Testing** setup with Jest
+- 📅 **Date handling** with DayJS
+- 🔤 **Custom fonts** with Ubuntu font family
 
 ## Requirements
 
@@ -329,6 +331,97 @@ function App() {
 
 Navigation types are defined in `/types/navigation.types.ts`.
 
+### Icons and SVG Handling
+
+RN-RN uses `react-native-svg` for rendering SVG icons and graphics. The boilerplate includes a set of pre-built icon components in `src/assets/icons/icons.tsx`.
+
+#### Using Icons
+
+Icons are implemented as React components that accept standardized props:
+
+```tsx
+import { ChevronLeftIcon } from '@src/assets/icons/icons';
+
+// With default props (height: 28, width: 28, color: theme text color)
+<ChevronLeftIcon />
+
+// With custom props
+<ChevronLeftIcon height={24} width={24} color="#FF0000" />
+```
+
+#### Icon Props
+
+All icons accept the following props through the `IconProps` interface:
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| height | number | 28 | The height of the icon |
+| width | number | 28 | The width of the icon |
+| color | string | Theme().colors.text | The color of the icon |
+| ...restProps | any | - | Any additional props to pass to the SVG component |
+
+#### Adding New Icons
+
+To add a new icon:
+
+1. Import the SVG paths or elements from your SVG file
+2. Create a new component following the pattern of existing icons
+3. Export the component with appropriate default props
+
+```tsx
+export const NewIcon = ({height = 28, width = 28, color = Theme().colors.text, ...restProps}: IconProps) => (
+  <Svg
+    width={width}
+    height={height}
+    fill="none"
+    viewBox="0 0 24 24"
+    {...restProps}
+  >
+    <Path
+      d="..." // Your SVG path data
+      fill={color}
+    />
+  </Svg>
+);
+```
+
+### ScreenHeader Component
+
+The `ScreenHeader` component provides a consistent header across screens with navigation controls and title.
+
+```tsx
+import { ScreenHeader } from '@components/ui/ScreenHeader';
+
+// Basic usage with default back button
+<ScreenHeader title="Screen Title" />
+
+// Custom right icon with action
+<ScreenHeader 
+  title="Screen Title" 
+  RightIcon={SearchIcon} 
+  onRightComponentPress={() => console.log('Search pressed')} 
+/>
+
+// Custom styling
+<ScreenHeader 
+  title="Screen Title" 
+  style={{ backgroundColor: 'black' }} 
+  textColor="white" 
+/>
+```
+
+#### ScreenHeader Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| title | string | (required) | The title text to display in the header |
+| style | ViewStyle | undefined | Custom styles for the header container |
+| textColor | string | Theme.colors.text | Color for the title and icons |
+| LeftIcon | IconComponent \| null | ChevronLeftIcon | Icon component for the left side (usually back button) |
+| RightIcon | IconComponent | undefined | Icon component for the right side (optional) |
+| onLeftComponentPress | () => void | navigation.goBack() | Function to call when left icon is pressed |
+| onRightComponentPress | () => void | null | Function to call when right icon is pressed |
+
 ### Permissions
 
 RN-RN uses [react-native-permissions](https://github.com/zoontek/react-native-permissions) for permission management.
@@ -397,6 +490,64 @@ log.error('Error message');
 logAPI.debug('API request', { url, method, data });
 logAPI.info('API response', { status, data });
 ```
+
+### Date Handling
+
+RN-RN uses [DayJS](https://day.js.org/) for date manipulation and formatting. DayJS is a lightweight alternative to Moment.js with a similar API.
+
+```typescript
+import dayjs from 'dayjs';
+
+// Get current date/time
+const now = dayjs();
+
+// Format dates
+const formattedDate = dayjs().format('YYYY-MM-DD HH:mm:ss');
+
+// Parse dates
+const date = dayjs('2025-08-01');
+
+// Date calculations
+const tomorrow = dayjs().add(1, 'day');
+const lastWeek = dayjs().subtract(7, 'day');
+
+// Date comparisons
+const isBefore = dayjs('2025-01-01').isBefore(dayjs('2025-12-31'));
+const isSame = dayjs('2025-01-01').isSame(dayjs('2025-01-01'));
+```
+
+### Custom Fonts
+
+RN-RN comes with the Ubuntu font family pre-configured. The font files are located in the `assets/fonts` directory.
+
+To use the custom fonts in your styles:
+
+```typescript
+import { DEFAULT_FONT } from '@src/constants';
+
+const styles = StyleSheet.create({
+  text: {
+    fontFamily: DEFAULT_FONT,
+    fontSize: 16,
+  },
+  boldText: {
+    fontFamily: DEFAULT_FONT,
+    fontWeight: 'bold',
+  },
+});
+```
+
+To add additional custom fonts:
+
+1. Add your font files to the `assets/fonts` directory
+2. Link the fonts using:
+   ```bash
+   npx react-native-asset
+   ```
+3. For iOS, you may need to add the font to the Info.plist file
+4. For Android, the fonts should be automatically linked
+
+For more details, see the [React Native documentation on custom fonts](https://reactnative.dev/docs/text#font-family).
 
 ## App Lifecycle
 
