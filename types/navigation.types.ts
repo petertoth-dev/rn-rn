@@ -1,5 +1,8 @@
 export type RootNavigationStackParamList = {
   'App.HomeScreen': undefined;
+  'App.TypographyScreen': undefined;
+  'App.GridSystemScreen': undefined;
+  'App.ComponentsScreen': undefined;
   'App.LoginScreen': { email: string } | undefined;
 };
 

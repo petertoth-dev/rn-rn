@@ -15,6 +15,9 @@ import { ThemeProvider } from '@src/themes/theme.context.tsx';
 import SplashScreen from '@components/app/SplashScreen.component.tsx';
 import { AppProvider } from './AppProvider.tsx';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TypographyScreen from '@src/screens/Typography.screen.tsx';
+import GridSystemScreen from '@src/screens/GridSystem.screen.tsx';
+import ComponentsScreen from '@src/screens/Components.screen.tsx';
 
 function App() {
   const Stack = createNativeStackNavigator<RootNavigationStackParamList>();
@@ -79,6 +82,9 @@ function App() {
                     component={LoginScreen}
                   />
                   <Stack.Screen name="App.HomeScreen" component={HomeScreen} />
+                  <Stack.Screen name="App.TypographyScreen" component={TypographyScreen} />
+                  <Stack.Screen name="App.GridSystemScreen" component={GridSystemScreen} />
+                  <Stack.Screen name="App.ComponentsScreen" component={ComponentsScreen} />
                 </Stack.Navigator>
               </NavigationContainer>
             </SafeAreaView>
