@@ -40,6 +40,7 @@ export type HelperStyles = {
   col: ColStyles;
   justifyContent: {start: StyleTypes; center: StyleTypes; spaceBetween: StyleTypes; spaceAround: StyleTypes; spaceEvenly: StyleTypes; }
   alignItems: {start: StyleTypes; end: StyleTypes; center: StyleTypes; stretch: StyleTypes, baseline: StyleTypes }
+  container: {flex: StyleTypes; center: StyleTypes }
 } & SpacerStyles;
 
 
