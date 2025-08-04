@@ -16,6 +16,7 @@ A modern, feature-rich React Native boilerplate designed for rapid development a
   - [Import Shortcuts](#import-shortcuts)
   - [Environment Configuration](#environment-configuration)
   - [State Management](#state-management)
+  - [Form Handling](#form-handling)
   - [HTTP Client](#http-client)
   - [Authentication](#authentication)
   - [Styling and Theming](#styling-and-theming)
@@ -33,6 +34,7 @@ A modern, feature-rich React Native boilerplate designed for rapid development a
 - 🚀 **Ready-to-use architecture** with best practices baked in
 - 🧩 **TypeScript** for type safety and better developer experience
 - 🔄 **State management** with Zustand and Immer
+- 📝 **Form handling** with React Hook Form
 - 🎨 **Theming system** with light/dark mode support
 - 🌐 **HTTP client** with built-in request/response handling
 - 🔐 **Authentication** flow with token management
@@ -214,6 +216,124 @@ const isReady = useStore(state => state.app.isReady);
 const setAppReadyStatus = useStore(state => state.app.setAppReadyStatus);
 setAppReadyStatus(true);
 ```
+
+### Form Handling
+
+RN-RN uses [React Hook Form](https://github.com/react-hook-form/react-hook-form) for efficient form management with minimal re-renders and easy validation.
+
+#### Basic Form Setup
+
+```tsx
+import { useForm } from 'react-hook-form';
+import Input from '@components/ui/forms/Input';
+import { Button, View, Text } from 'react-native';
+
+type FormData = {
+  email: string;
+  password: string;
+};
+
+function LoginForm() {
+  const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
+  
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+    // Handle form submission
+  };
+
+  return (
+    <View>
+      <Input
+        name="email"
+        control={control}
+        placeholder="Email"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        rules={{
+          required: 'Email is required',
+          pattern: {
+            value: /\S+@\S+\.\S+/,
+            message: 'Please enter a valid email',
+          },
+        }}
+      />
+      
+      <Input
+        name="password"
+        control={control}
+        placeholder="Password"
+        secureTextEntry
+        rules={{
+          required: 'Password is required',
+          minLength: {
+            value: 6,
+            message: 'Password must be at least 6 characters',
+          },
+        }}
+      />
+      
+      <Button title="Login" onPress={handleSubmit(onSubmit)} />
+    </View>
+  );
+}
+```
+
+#### Form Validation
+
+React Hook Form provides built-in validation with error messages:
+
+```tsx
+// Example validation rules
+const validationRules = {
+  required: 'This field is required',
+  minLength: {
+    value: 6,
+    message: 'Minimum 6 characters'
+  },
+  maxLength: {
+    value: 20,
+    message: 'Maximum 20 characters'
+  },
+  pattern: {
+    value: /\S+@\S+\.\S+/,
+    message: 'Invalid format'
+  },
+  validate: (value) => value === 'correct' || 'Invalid value'
+};
+```
+
+#### Custom Form Components
+
+The `Input` component supports custom children for advanced input types:
+
+```tsx
+import { useForm } from 'react-hook-form';
+import Input from '@components/ui/forms/Input';
+import { View, TextInput } from 'react-native';
+
+function CustomInputExample() {
+  const { control } = useForm();
+  
+  return (
+    <View>
+      {/* With custom child component */}
+      <Input
+        name="customField"
+        control={control}
+        rules={{ required: 'This field is required' }}
+      >
+        <TextInput 
+          style={{ height: 100, textAlignVertical: 'top' }}
+          multiline
+          placeholder="Enter long text here..."
+        />
+      </Input>
+    </View>
+  );
+}
+```
+
+For more advanced usage, refer to the [React Hook Form documentation](https://react-hook-form.com/get-started).
 
 ### HTTP Client
 
@@ -650,3 +770,4 @@ Contributions are welcome! Please follow these steps:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
