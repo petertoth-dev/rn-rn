@@ -377,6 +377,16 @@ const helperStyles: HelperStyles = {
     stretch: { alignItems: 'stretch' },
     baseline: { alignItems: 'baseline' },
   },
+  container: {
+    flex: {
+      flex: 1,
+    },
+    center: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      alignSelf: 'center',
+    }
+  },
   ...generateSpacerStyles(),
 };
 
