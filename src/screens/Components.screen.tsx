@@ -15,19 +15,6 @@ const ComponentsScreen = () => {
     >
       <ScreenHeader title="Components" />
 
-      {/*/!* Typography *!/*/}
-      {/*<Section title="Typography">*/}
-      {/*  <Text style={[Theme.styles.H1, Theme.styles.mb2]}>H1 Heading</Text>*/}
-      {/*  <Text style={[Theme.styles.H2, Theme.styles.mb2]}>H2 Heading</Text>*/}
-      {/*  <Text style={[Theme.styles.H3, Theme.styles.mb2]}>H3 Heading</Text>*/}
-      {/*  <Text style={[Theme.styles.H4, Theme.styles.mb2]}>H4 Heading</Text>*/}
-      {/*  <Text style={[Theme.styles.H5, Theme.styles.mb2]}>H5 Heading</Text>*/}
-      {/*  <Text style={[Theme.styles.H6, Theme.styles.mb2]}>H6 Heading</Text>*/}
-      {/*  <Text style={[Theme.styles.Lead, Theme.styles.mb2]}>Lead text for emphasis</Text>*/}
-      {/*  <Text style={[Theme.styles.Link, Theme.styles.mb2]}>This is a link</Text>*/}
-      {/*  <Text style={[Theme.styles.Text, Theme.styles.text.muted]}>Muted text example</Text>*/}
-      {/*</Section>*/}
-
       {/* Inputs */}
       <Section title="Text Inputs">
         <TextInput style={[Theme.styles.TextInput, Theme.styles.mb3]} placeholder="Default Input" placeholderTextColor={Theme.colors.neutral300} />

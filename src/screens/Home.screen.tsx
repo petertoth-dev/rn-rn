@@ -1,7 +1,7 @@
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
-import { log, logUI } from '@src/utils/logger.ts';
+import { logUI } from '@src/utils/logger.ts';
 import { APP_ENV } from '@env';
 import { storage } from '@src/storage/Storage.ts';
 import { StoreState, useStore } from '@state/store.ts';
@@ -29,15 +29,19 @@ const HomeScreen = () => {
   // Save render timestamp
   storage.setItem('RENDER_TIMESTAMP', dayjs().format('YYYY-MM-DD HH:mm:ss'));
 
-  // Fetch Quote
+  /**
+   * Example usage for a custom API request
+   */
   useEffect(() => {
     getQuote.request().then((response) => {
-      const data = response as unknown as QuoteApiResponse;
+      const data = response as unknown as QuoteApiResponse; // This is just an example so we override the default response typings
       setQuote(data[0]?.q || '');
     });
   }, []);
 
-  // Handle Location Permissions
+  /**
+   * Example initialization usage of the geolocation service
+   */
   useEffect(() => {
     check(PERMISSIONS.LOCATION_WHEN_IN_USE.permission).then((status) => {
       if (status !== RESULTS.GRANTED) {
