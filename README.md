@@ -36,7 +36,7 @@ A modern, feature-rich React Native boilerplate designed for rapid development a
 - 🔄 **[State management](#state-management)** with Zustand and Immer
 - 📝 **[Form handling](#form-handling)** with React Hook Form
 - 🎨 **[Theming system](#styling-and-theming)** with light/dark mode support
-- 🌐 **[HTTP client](#http-client)** with built-in request/response handling
+- 🌐 **[HTTP client](src/api/README.md)** with built-in request/response handling
 - 🔐 **[Authentication](#authentication)** flow with token management
 - 📱 **[Navigation](#navigation)** using React Navigation
 - 💾 **[Storage system](#storage)** with adapter pattern for different providers
