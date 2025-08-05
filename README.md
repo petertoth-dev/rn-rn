@@ -25,6 +25,7 @@ A modern, feature-rich React Native boilerplate designed for rapid development a
   - [Geolocation](#geolocation)
   - [Connectivity](#connectivity)
   - [Logging](#logging)
+  - [Storage](#storage)
 - [App Lifecycle](#app-lifecycle)
 - [Contributing](#contributing)
 - [License](#license)
@@ -39,6 +40,7 @@ A modern, feature-rich React Native boilerplate designed for rapid development a
 - 🌐 **HTTP client** with built-in request/response handling
 - 🔐 **Authentication** flow with token management
 - 📱 **Navigation** using React Navigation
+- 💾 **Storage system** with adapter pattern for different providers
 - 🔌 **Environment configuration** for development and production
 - 📍 **Geolocation** services with permission handling
 - 🔒 **Permissions** management
@@ -610,6 +612,32 @@ log.error('Error message');
 logAPI.debug('API request', { url, method, data });
 logAPI.info('API response', { status, data });
 ```
+
+### Storage
+
+RN-RN provides a flexible storage system using the Adapter Pattern, allowing you to easily switch between different storage providers:
+
+```typescript
+import { storage } from '@src/storage/Storage';
+
+// Store data
+storage.setItem('MY_KEY', { data: 'example' });
+
+// Retrieve data
+const data = storage.getItem('MY_KEY');
+
+// Remove data
+storage.removeItem('MY_KEY');
+
+// Clear all data
+storage.clear();
+```
+
+The storage system includes adapters for:
+- MMKV (high-performance, synchronous storage)
+- AsyncStorage (asynchronous storage with Promise-based API)
+
+For detailed documentation on how to use the storage system and create custom adapters, see the [Storage Documentation](src/storage/README.md).
 
 ### Date Handling
 
