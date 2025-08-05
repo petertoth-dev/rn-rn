@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { logUI } from '@src/utils/logger.ts';
@@ -8,8 +8,7 @@ import { StoreState, useStore } from '@state/store.ts';
 import { useGetQuote } from '@src/api/app.api.ts';
 import dayjs from 'dayjs';
 import { useTheme } from '@src/themes/theme.context.tsx';
-import { check, request, RESULTS } from 'react-native-permissions';
-import { PERMISSIONS } from '@src/constants.ts';
+import { openSettings, RESULTS } from 'react-native-permissions';
 import useWatchLocation from '@src/utils/geolocation.ts';
 import { QuoteApiResponse } from '@app-types/api.types.ts';
 import { ScreenHeader } from '@components/ui/ScreenHeader.tsx';
@@ -24,7 +23,7 @@ const HomeScreen = () => {
   const [quote, setQuote] = useState<string>('');
   const getQuote = useGetQuote();
   const { Theme: theme } = useTheme();
-  const { watchLocation } = useWatchLocation();
+  const { watch, permissions } = useWatchLocation();
 
   // Save render timestamp
   storage.setItem('RENDER_TIMESTAMP', dayjs().format('YYYY-MM-DD HH:mm:ss'));
@@ -43,14 +42,32 @@ const HomeScreen = () => {
    * Example initialization usage of the geolocation service
    */
   useEffect(() => {
-    check(PERMISSIONS.LOCATION_WHEN_IN_USE.permission).then((status) => {
-      if (status !== RESULTS.GRANTED) {
-        request(PERMISSIONS.LOCATION_WHEN_IN_USE.permission);
-      } else {
-        watchLocation.start();
-        request(PERMISSIONS.LOCATION_ALWAYS.permission);
+    const init = async () => {
+      const status = await permissions.foreground.check();
+      if (status === RESULTS.BLOCKED) {
+        Alert.alert(
+          'Location Permission Blocked',
+          'Please enable location access in your device settings.',
+          [
+            { text: 'Open Settings', onPress: ()=>{openSettings()} },
+            { text: 'Cancel', style: 'cancel' },
+          ]
+        );
+        return;
       }
-    });
+      if (status !== RESULTS.GRANTED) {
+        const result = await permissions.foreground.request();
+        if (result !== RESULTS.GRANTED) {
+          // Add UI for requesting
+          return;
+        }
+      }
+
+      watch.start();
+    };
+
+    init();
+    return () => watch.stop();
   }, []);
 
   return (
