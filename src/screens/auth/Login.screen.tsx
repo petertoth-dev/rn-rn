@@ -58,6 +58,7 @@ const LoginScreen = () => {
           },
         }}
         placeholder="Email"
+        placeholderTextColor={Theme.colors.neutral300}
         keyboardType="email-address"
         autoCapitalize="none"
         autoCorrect={false}
@@ -72,6 +73,7 @@ const LoginScreen = () => {
           minLength: { value: 6, message: 'Password must be at least 6 characters' },
         }}
         placeholder="Password"
+        placeholderTextColor={Theme.colors.neutral300}
         rightItem={
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Text>{showPassword ? 'Hide' : 'Show'}</Text>
