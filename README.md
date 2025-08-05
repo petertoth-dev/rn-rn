@@ -394,18 +394,32 @@ Authentication is implemented with token management and various authentication s
 
 ### Styling and Theming
 
-RN-RN includes a comprehensive theming system with support for light and dark modes:
+RN-RN includes a comprehensive theming system with support for light and dark modes. The system provides a consistent way to style your application with automatic theme switching based on device preferences.
 
-- Themes are automatically updated based on system preferences or can be manually set
-- Bootstrap-style utility classes for consistent styling
-- Variable typography and spacing
-- Theme files follow the naming convention: `[name].[scheme].theme.ts` (e.g., `default.light.theme.ts`)
+#### Key Features
 
-Usage:
+- **Light and Dark Mode Support**: Themes automatically update based on system preferences or can be manually set
+- **Utility Classes**: Bootstrap-style utility classes for consistent styling across your app
+- **Responsive Typography**: Variable typography with predefined heading styles and text decorations
+- **Flexible Grid System**: 12-column grid system with responsive layouts
+- **Spacing Utilities**: Consistent spacing with margin and padding helpers
+- **Color System**: Contextual colors for primary, secondary, success, danger, etc.
+- **Component Styles**: Pre-styled components like buttons, cards, and inputs
+- **Global Access**: Access theme properties both inside and outside of React components
+
+#### Theme Structure
+
+Theme files follow the naming convention: `[name].[scheme].theme.ts` (e.g., `default.light.theme.ts`, `default.dark.theme.ts`).
+
+Each theme consists of:
+
+- **Colors**: Base colors, contextual colors, and theme-specific colors
+- **Styles**: Core component styles and utility helper styles
+- **Spacing**: Consistent spacing values for margins, padding, and gaps
+
+#### Basic Usage
+
 ```jsx
-// Access the current color scheme
-const colorScheme = useStore((state) => state.app.system.colorScheme);
-
 // Access the theme in components
 import { useTheme } from '@src/themes/theme.context';
 import { View, Text } from 'react-native';
@@ -414,17 +428,109 @@ function MyComponent() {
   const { Theme } = useTheme();
   
   return (
-    <View style={{ backgroundColor: Theme.colors.background }}>
-      <Text style={{ color: Theme.colors.text }}>Hello World</Text>
+    <View style={[Theme.styles.Bg]}>
+      <Text style={[Theme.styles.Text]}>Hello World</Text>
     </View>
   );
 }
 
-// Or use the global Theme function
+// Or use the global Theme function outside of components
 import { Theme } from '@src/themes/theme.context';
 
 const backgroundColor = Theme().colors.background;
 ```
+
+#### Automatic Light/Dark Mode
+
+The `Theme.styles.Bg` and `Theme.styles.Text` styles automatically adapt to the current theme:
+
+```jsx
+// This will use light or dark background/text colors based on the active theme
+<View style={[Theme.styles.Bg]}>
+  <Text style={[Theme.styles.Text]}>Adaptive text</Text>
+</View>
+```
+
+#### Typography
+
+```jsx
+// Headings
+<Text style={Theme.styles.H1}>Heading 1</Text>
+<Text style={Theme.styles.H2}>Heading 2</Text>
+// ... H3, H4, H5, H6
+
+// Text styles
+<Text style={[Theme.styles.Text, Theme.styles.text.center]}>Centered text</Text>
+<Text style={[Theme.styles.Text, Theme.styles.text.strong]}>Bold text</Text>
+<Text style={[Theme.styles.Text, Theme.styles.text.muted]}>Muted text</Text>
+<Text style={[Theme.styles.Text, Theme.styles.text.small]}>Small text</Text>
+<Text style={[Theme.styles.Text, Theme.styles.text.underline]}>Underlined text</Text>
+<Text style={[Theme.styles.Text, Theme.styles.text.strike]}>Strike-through text</Text>
+
+// Special text components
+<Text style={Theme.styles.Lead}>Lead paragraph</Text>
+<Text style={Theme.styles.Link}>Link text</Text>
+<Text style={Theme.styles.Code}>Code snippet</Text>
+```
+
+#### Grid System
+
+```jsx
+// Basic row with equal columns
+<View style={Theme.styles.row}>
+  <View style={Theme.styles.col.grow}>
+    <Text>Column 1</Text>
+  </View>
+  <View style={Theme.styles.col.grow}>
+    <Text>Column 2</Text>
+  </View>
+</View>
+
+// 12-column grid system
+<View style={Theme.styles.row}>
+  <View style={Theme.styles.col.col4}>
+    <Text>4 columns</Text>
+  </View>
+  <View style={Theme.styles.col.col8}>
+    <Text>8 columns</Text>
+  </View>
+</View>
+
+// Alignment options
+<View style={[Theme.styles.row, Theme.styles.justifyContent.center]}>
+  <Text>Centered content</Text>
+</View>
+```
+
+#### Spacing
+
+```jsx
+// Margins (m = margin, t/r/b/l/x/y = direction, 0-5 = size)
+<View style={Theme.styles.m3}>
+  <Text>Margin 3 on all sides</Text>
+</View>
+<View style={Theme.styles.mt2}>
+  <Text>Margin top 2</Text>
+</View>
+<View style={Theme.styles.mx4}>
+  <Text>Horizontal margin 4</Text>
+</View>
+
+// Padding (p = padding, t/r/b/l/x/y = direction, 0-5 = size)
+<View style={Theme.styles.p3}>
+  <Text>Padding 3 on all sides</Text>
+</View>
+<View style={Theme.styles.py2}>
+  <Text>Vertical padding 2</Text>
+</View>
+
+// Gap
+<View style={Theme.styles.g2}>
+  <Text>Gap 2 between children</Text>
+</View>
+```
+
+For more detailed documentation, see [Themes Documentation](src/themes/README.md).
 
 ### Navigation
 
