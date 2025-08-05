@@ -70,13 +70,12 @@ export const get = async <T>(
   url: string,
   params?: any,
   options?: AxiosRequestConfig,
+  onUpdate?: (freshData: T) => void,
 ) => {
   const netInfo = await NetInfo.fetch();
   const cacheMode = params?.cache || 'offline'; // TODO: Consider using cache-control headers | Consider using eTags (If-None-Match) as well | check this: https://axios-cache-interceptor.js.org/config/request-specifics
   const cacheKey = url + ':' + JSON.stringify(params);
-  const cachedResponse = storage.getItem(
-    'API.responses.' + cacheKey,
-  ) as AxiosResponse<T, any>;
+  const cachedResponse = storage.getItem('API.responses.' + cacheKey) as AxiosResponse<T, any>;
 
   if (!netInfo.isConnected) {
     if (cacheMode === 'disabled') {
@@ -105,6 +104,7 @@ export const get = async <T>(
         api.get<T>(url, { params, ...options }).then(response => {
           if (cacheMode !== 'disabled' && response.data) {
             storage.setItem('API.responses.' + cacheKey, response);
+            onUpdate?.(response.data); // Cache mode: eager - Send the updated response
           }
         });
       }
