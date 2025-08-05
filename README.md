@@ -12,43 +12,42 @@ A modern, feature-rich React Native boilerplate designed for rapid development a
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Project Structure](#project-structure)
-- [Usage](#usage)
-  - [Import Shortcuts](#import-shortcuts)
-  - [Environment Configuration](#environment-configuration)
-  - [State Management](#state-management)
-  - [Form Handling](#form-handling)
-  - [HTTP Client](#http-client)
-  - [Authentication](#authentication)
-  - [Styling and Theming](#styling-and-theming)
-  - [Navigation](#navigation)
-  - [Permissions](#permissions)
-  - [Geolocation](#geolocation)
-  - [Connectivity](#connectivity)
-  - [Logging](#logging)
-  - [Storage](#storage)
+- [Import Shortcuts](#import-shortcuts)
+- [Environment Configuration](#environment-configuration)
+- [State Management](#state-management)
+- [Form Handling](#form-handling)
+- [HTTP Client](#http-client)
+- [Authentication](#authentication)
+- [Styling and Theming](#styling-and-theming)
+- [Navigation](#navigation)
+- [Permissions](#permissions)
+- [Geolocation](#geolocation)
+- [Connectivity](#connectivity)
+- [Logging](#logging)
+- [Storage](#storage)
 - [App Lifecycle](#app-lifecycle)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Features
 
-- 🚀 **Ready-to-use architecture** with best practices baked in
-- 🧩 **TypeScript** for type safety and better developer experience
-- 🔄 **State management** with Zustand and Immer
-- 📝 **Form handling** with React Hook Form
-- 🎨 **Theming system** with light/dark mode support
-- 🌐 **HTTP client** with built-in request/response handling
-- 🔐 **Authentication** flow with token management
-- 📱 **Navigation** using React Navigation
-- 💾 **Storage system** with adapter pattern for different providers
-- 🔌 **Environment configuration** for development and production
-- 📍 **Geolocation** services with permission handling
-- 🔒 **Permissions** management
-- 📶 **Connectivity** monitoring
-- 📝 **Logging** system
-- 🧪 **Testing** setup with Jest
-- 📅 **Date handling** with DayJS
-- 🔤 **Custom fonts** with Ubuntu font family
+- 🚀 **[Ready-to-use architecture](#project-structure)** with best practices baked in
+- 🧩 **[TypeScript](#import-shortcuts)** for type safety and better developer experience
+- 🔄 **[State management](#state-management)** with Zustand and Immer
+- 📝 **[Form handling](#form-handling)** with React Hook Form
+- 🎨 **[Theming system](#styling-and-theming)** with light/dark mode support
+- 🌐 **[HTTP client](#http-client)** with built-in request/response handling
+- 🔐 **[Authentication](#authentication)** flow with token management
+- 📱 **[Navigation](#navigation)** using React Navigation
+- 💾 **[Storage system](#storage)** with adapter pattern for different providers
+- 🔌 **[Environment configuration](#environment-configuration)** for development and production
+- 📍 **[Geolocation](#geolocation)** services with permission handling
+- 🔒 **[Permissions](#permissions)** management
+- 📶 **[Connectivity](#connectivity)** monitoring
+- 📝 **[Logging](#logging)** system
+- 🧪 **[Testing](#requirements)** setup with Jest
+- 📅 **[Date handling](#date-handling)** with DayJS
+- 🔤 **[Custom fonts](#custom-fonts)** with Ubuntu font family
 
 ## Requirements
 
@@ -124,9 +123,7 @@ rn-rn/
 └── index.js                # Entry point
 ```
 
-## Usage
-
-### Import Shortcuts
+## Import Shortcuts
 
 RN-RN provides convenient import shortcuts to avoid deep relative imports:
 
@@ -148,7 +145,7 @@ Available shortcuts:
 
 To add or update shortcuts, modify `babel.config.js` and `tsconfig.json`.
 
-### Environment Configuration
+## Environment Configuration
 
 RN-RN uses `react-native-dotenv` for environment configuration. There are two environments by default: `development` and `production`.
 
@@ -168,7 +165,7 @@ console.log(`Current environment: ${APP_ENV}`);
 console.log(`API base URL: ${BASE_URL}`);
 ```
 
-### State Management
+## State Management
 
 RN-RN uses Zustand for state management, following a slice pattern for better organization and type safety.
 
@@ -219,7 +216,7 @@ const setAppReadyStatus = useStore(state => state.app.setAppReadyStatus);
 setAppReadyStatus(true);
 ```
 
-### Form Handling
+## Form Handling
 
 RN-RN uses [React Hook Form](https://github.com/react-hook-form/react-hook-form) for efficient form management with minimal re-renders and easy validation.
 
@@ -337,7 +334,7 @@ function CustomInputExample() {
 
 For more advanced usage, refer to the [React Hook Form documentation](https://react-hook-form.com/get-started).
 
-### HTTP Client
+## HTTP Client
 
 RN-RN provides a wrapper around Axios for making HTTP requests. API calls should be grouped into `*.api.ts` files under the `api` folder:
 
@@ -388,11 +385,11 @@ handle(user?.id).then((response) => {
 });
 ```
 
-### Authentication
+## Authentication
 
 Authentication is implemented with token management and various authentication strategies. For detailed information, see [Authentication Documentation](src/api/auth/README.md).
 
-### Styling and Theming
+## Styling and Theming
 
 RN-RN includes a comprehensive theming system with support for light and dark modes. The system provides a consistent way to style your application with automatic theme switching based on device preferences.
 
@@ -532,7 +529,7 @@ The `Theme.styles.Bg` and `Theme.styles.Text` styles automatically adapt to the 
 
 For more detailed documentation, see [Themes Documentation](src/themes/README.md).
 
-### Navigation
+## Navigation
 
 RN-RN uses React Navigation for screen navigation:
 
@@ -559,7 +556,7 @@ function App() {
 
 Navigation types are defined in `/types/navigation.types.ts`.
 
-### Icons and SVG Handling
+## Icons and SVG Handling
 
 RN-RN uses `react-native-svg` for rendering SVG icons and graphics. The boilerplate includes a set of pre-built icon components in `src/assets/icons/icons.tsx`.
 
@@ -613,7 +610,7 @@ export const NewIcon = ({height = 28, width = 28, color = Theme().colors.text, .
 );
 ```
 
-### ScreenHeader Component
+## ScreenHeader Component
 
 The `ScreenHeader` component provides a consistent header across screens with navigation controls and title.
 
@@ -650,7 +647,7 @@ import { ScreenHeader } from '@components/ui/ScreenHeader';
 | onLeftComponentPress | () => void | navigation.goBack() | Function to call when left icon is pressed |
 | onRightComponentPress | () => void | null | Function to call when right icon is pressed |
 
-### Permissions
+## Permissions
 
 RN-RN uses [react-native-permissions](https://github.com/zoontek/react-native-permissions) for permission management.
 
@@ -661,7 +658,7 @@ To add new permissions:
 
 For a comprehensive understanding of the permission flow, refer to the [permission flow diagram](https://github.com/zoontek/react-native-permissions).
 
-### Geolocation
+## Geolocation
 
 RN-RN implements [@react-native-community/geolocation](https://github.com/react-native-geolocation/react-native-geolocation) for location services.
 
@@ -680,7 +677,7 @@ import { watchLocation } from '@src/utils/geolocation';
 watchLocation.start();
 ```
 
-### Connectivity
+## Connectivity
 
 RN-RN monitors network connectivity using [@react-native-community/netinfo](https://www.npmjs.com/package/@react-native-community/netinfo).
 
@@ -701,7 +698,7 @@ if (connectivity.isOnline) {
 }
 ```
 
-### Logging
+## Logging
 
 RN-RN includes a logging system based on [react-native-logs](https://www.npmjs.com/package/react-native-logs) with improved formatting and grouping capabilities:
 
@@ -719,7 +716,7 @@ logAPI.debug('API request', { url, method, data });
 logAPI.info('API response', { status, data });
 ```
 
-### Storage
+## Storage
 
 RN-RN provides a flexible storage system using the Adapter Pattern, allowing you to easily switch between different storage providers:
 
@@ -745,7 +742,7 @@ The storage system includes adapters for:
 
 For detailed documentation on how to use the storage system and create custom adapters, see the [Storage Documentation](src/storage/README.md).
 
-### Date Handling
+## Date Handling
 
 RN-RN uses [DayJS](https://day.js.org/) for date manipulation and formatting. DayJS is a lightweight alternative to Moment.js with a similar API.
 
@@ -770,7 +767,7 @@ const isBefore = dayjs('2025-01-01').isBefore(dayjs('2025-12-31'));
 const isSame = dayjs('2025-01-01').isSame(dayjs('2025-01-01'));
 ```
 
-### Custom Fonts
+## Custom Fonts
 
 RN-RN comes with the Ubuntu font family pre-configured. The font files are located in the `assets/fonts` directory.
 
