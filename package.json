@@ -28,12 +28,15 @@
     "react-hook-form": "^7.62.0",
     "react-native": "0.80.1",
     "react-native-encrypted-storage": "^4.0.3",
+    "react-native-gesture-handler": "^2.27.2",
     "react-native-logs": "^5.3.0",
     "react-native-mmkv": "^3.3.0",
     "react-native-permissions": "^5.4.2",
+    "react-native-reanimated": "^4.0.1",
     "react-native-safe-area-context": "^5.5.2",
     "react-native-screens": "^4.13.1",
     "react-native-svg": "^15.12.1",
+    "react-native-worklets": "^0.4.1",
     "zustand": "^5.0.6"
   },
   "devDependencies": {

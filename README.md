@@ -48,6 +48,7 @@ A modern, feature-rich React Native boilerplate designed for rapid development a
 - 🧪 **[Testing](#requirements)** setup with Jest
 - 📅 **[Date handling](#date-handling)** with DayJS
 - 🔤 **[Custom fonts](#custom-fonts)** with Ubuntu font family
+- ✨ **[Animations](#navigation)** with [React Native Reanimated](https://github.com/software-mansion/react-native-reanimated) v4.0.1
 
 ## Requirements
 
