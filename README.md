@@ -25,6 +25,8 @@ A modern, feature-rich React Native boilerplate designed for rapid development a
 - [Connectivity](#connectivity)
 - [Logging](#logging)
 - [Storage](#storage)
+- [App Provider](#app-provider)
+- [Splash Screen](#splash-screen)
 - [App Lifecycle](#app-lifecycle)
 - [Contributing](#contributing)
 - [License](#license)
@@ -32,23 +34,26 @@ A modern, feature-rich React Native boilerplate designed for rapid development a
 ## Features
 
 - 🚀 **[Ready-to-use architecture](#project-structure)** with best practices baked in
-- 🧩 **[TypeScript](#import-shortcuts)** for type safety and better developer experience
-- 🔄 **[State management](#state-management)** with Zustand and Immer
-- 📝 **[Form handling](#form-handling)** with React Hook Form
+- 🧩 **[TypeScript](https://github.com/microsoft/TypeScript)** for type safety and better developer experience
+- 🌐 **[HTTP client](src/api/README.md)** with [Axios](https://github.com/axios/axios) for request/response handling
+- 🔄 **[State management](#state-management)** with [Zustand](https://github.com/pmndrs/zustand) and [Immer](https://github.com/immerjs/immer)
+- 📝 **[Form handling](#form-handling)** with [React Hook Form](https://github.com/react-hook-form/react-hook-form)
 - 🎨 **[Theming system](#styling-and-theming)** with light/dark mode support
-- 🌐 **[HTTP client](src/api/README.md)** with built-in request/response handling
 - 🔐 **[Authentication](#authentication)** flow with token management
-- 📱 **[Navigation](#navigation)** using React Navigation
-- 💾 **[Storage system](#storage)** with adapter pattern for different providers
-- 🔌 **[Environment configuration](#environment-configuration)** for development and production
-- 📍 **[Geolocation](#geolocation)** services with permission handling
-- 🔒 **[Permissions](#permissions)** management
-- 📶 **[Connectivity](#connectivity)** monitoring
-- 📝 **[Logging](#logging)** system
-- 🧪 **[Testing](#requirements)** setup with Jest
-- 📅 **[Date handling](#date-handling)** with DayJS
-- 🔤 **[Custom fonts](#custom-fonts)** with Ubuntu font family
+- 📱 **[Navigation](#navigation)** using [React Navigation](https://github.com/react-navigation/react-navigation)
+- 💾 **[Storage system](#storage)** with adapter pattern for [MMKV](https://github.com/mrousavy/react-native-mmkv) and [AsyncStorage](https://github.com/react-native-async-storage/async-storage)
+- 🔌 **[Environment configuration](#environment-configuration)** with [react-native-dotenv](https://github.com/goatandsheep/react-native-dotenv)
+- 📍 **[Geolocation](#geolocation)** services with [@react-native-community/geolocation](https://github.com/react-native-geolocation/react-native-geolocation)
+- 🔒 **[Permissions](#permissions)** management with [react-native-permissions](https://github.com/zoontek/react-native-permissions)
+- 📶 **[Connectivity](#connectivity)** monitoring with [@react-native-community/netinfo](https://github.com/react-native-netinfo/react-native-netinfo)
+- 📝 **[Logging](#logging)** system with [react-native-logs](https://github.com/onubo/react-native-logs)
+- 📅 **[Date handling](#date-handling)** with [DayJS](https://github.com/iamkun/dayjs)
 - ✨ **[Animations](#navigation)** with [React Native Reanimated](https://github.com/software-mansion/react-native-reanimated) v4.0.1
+- 🔄 **[AppProvider](#app-provider)** for bootstrapping the application
+- 🚀 **[Splash Screen](#splash-screen)** for initial loading experience
+- 🎨 **[Icons and SVG Handling](#icons-and-svg-handling)** with pre-built icon components using [react-native-svg](https://github.com/software-mansion/react-native-svg)
+- 🔤 **[Custom fonts](#custom-fonts)**
+- 🧪 **[Testing](#requirements)** setup with [Jest](https://github.com/facebook/jest)
 
 ## Requirements
 
@@ -800,6 +805,109 @@ To add additional custom fonts:
 4. For Android, the fonts should be automatically linked
 
 For more details, see the [React Native documentation on custom fonts](https://reactnative.dev/docs/text#font-family).
+
+## App Provider
+
+The AppProvider is a crucial component that bootstraps the application and manages its initialization process. It wraps the entire application and handles various setup tasks before the main UI is displayed.
+
+```tsx
+import { AppProvider } from './AppProvider';
+
+function App() {
+  return (
+    <AppProvider>
+      {/* Your app content */}
+    </AppProvider>
+  );
+}
+```
+
+#### Key Features
+
+- **Application Bootstrapping**: Initializes essential services and data before the app becomes interactive
+- **State Management**: Sets the app's ready status when initialization is complete
+- **System Monitoring**: Subscribes to color scheme and connectivity changes
+- **Splash Screen Control**: Works with the isReady state to control when the splash screen is dismissed
+
+#### Implementation
+
+The AppProvider uses React's Context API to provide initialization services to the entire application:
+
+```tsx
+export const AppProvider = ({ children }: { children: ReactNode }) => {
+  const setAppReadyStatus = useStore(state => state.app.setAppReadyStatus);
+
+  useColorSchemes(); // Initialize and subscribe to color scheme updates
+  useConnectivity(); // Subscribe to network/internet connection updates
+
+  useEffect(() => {
+    const bootstrap = async () => {
+      // Perform initialization tasks here
+      // For example: load user data, check authentication, etc.
+      
+      // When everything is ready, set isReady to true
+      setAppReadyStatus(true);
+    };
+
+    bootstrap();
+  }, []);
+
+  return <>{children}</>;
+};
+```
+
+## Splash Screen
+
+The Splash Screen is displayed during the application's initialization phase, providing visual feedback to users while the app loads. It's automatically shown when the app starts and dismissed once the AppProvider sets the `isReady` state to true.
+
+```tsx
+import SplashScreen from '@components/app/SplashScreen.component';
+
+function App() {
+  const isReady = useStore(state => state.app.isReady);
+  
+  return (
+    <AppProvider>
+      {!isReady ? (
+        <SplashScreen />
+      ) : (
+        <View>
+          {/* Main application UI */}
+        </View>
+      )}
+    </AppProvider>
+  );
+}
+```
+
+#### Implementation
+
+The SplashScreen component is a simple loading screen with an activity indicator:
+
+```tsx
+const SplashScreen = () => {
+  const { Theme } = useTheme();
+
+  return (
+    <View style={[Theme.styles.container.flex, Theme.styles.container.center]}>
+      <Text style={[Theme.styles.Text, Theme.styles.mb4]}>Loading...</Text>
+      <ActivityIndicator size="large" color={Theme.colors.primary}/>
+    </View>
+  );
+};
+```
+
+#### Connection with AppProvider
+
+The AppProvider and Splash Screen work together to create a smooth startup experience:
+
+1. When the app launches, the AppProvider begins its initialization process
+2. While initialization is in progress, `isReady` is false, so the Splash Screen is displayed
+3. The AppProvider performs necessary setup tasks (loading data, checking authentication, etc.)
+4. Once initialization is complete, the AppProvider sets `isReady` to true
+5. This state change triggers a re-render, replacing the Splash Screen with the main application UI
+
+This pattern ensures that users see a loading indicator until the app is fully ready to use, providing a better user experience by avoiding partially loaded or non-functional UI states.
 
 ## App Lifecycle
 
